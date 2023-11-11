@@ -10,8 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mui/material": "^5.14.17",
+    "@mui/styled-engine-sc": "^6.0.0-alpha.5",
+    "axios": "^1.6.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "styled-components": "^6.1.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
@@ -22,6 +26,7 @@
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "react-router-dom": "^6.18.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   }
