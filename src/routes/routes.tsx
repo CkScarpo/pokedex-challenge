@@ -1,4 +1,6 @@
+import { CatchingPokemon, Favorite } from "@mui/icons-material";
 import Layout from "../components/Layout";
+import FavoritePage from "../pages/Favorite";
 import HomePage from "../pages/Home";
 
 const routesConfig = [
@@ -7,9 +9,15 @@ const routesConfig = [
     children: [
       {
         path: "/",
-        name: "Inicio",
-        icon: "",
+        name: "Pokemons",
+        icon: <CatchingPokemon />,
         element: <HomePage />,
+      },
+      {
+        path: "/favoritos",
+        name: "Favoritos",
+        icon: <Favorite />,
+        element: <FavoritePage />,
       },
     ],
   },
