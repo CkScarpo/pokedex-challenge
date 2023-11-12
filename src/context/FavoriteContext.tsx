@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { PokemonDetail } from "../@types/getAllPokemons";
 
-interface FavoriteContextProps {
+interface FavoritesContextProps {
   favorites: PokemonDetail[];
   setFavorites: React.Dispatch<React.SetStateAction<PokemonDetail[]>>;
 }
 
-const FavoriteContext = React.createContext<FavoriteContextProps>({
+export const FavoritesContext = React.createContext<FavoritesContextProps>({
   favorites: [],
   setFavorites: () => {},
 });
@@ -18,8 +18,8 @@ interface headerProps {
 export const FavoriteProvider: React.FC<headerProps> = ({ children }) => {
   const [favorites, setFavorites] = useState<PokemonDetail[]>([]);
   return (
-    <FavoriteContext.Provider value={{ favorites, setFavorites }}>
+    <FavoritesContext.Provider value={{ favorites, setFavorites }}>
       {children}
-    </FavoriteContext.Provider>
+    </FavoritesContext.Provider>
   );
 };

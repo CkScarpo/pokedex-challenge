@@ -1,17 +1,32 @@
+import { useContext } from "react";
 import Card from "@mui/material/Card";
-import { PokemonDetail } from "../../../../@types/getAllPokemons";
+import { PokemonDetail } from "../../@types/getAllPokemons";
 import CardMedia from "@mui/material/CardMedia";
 import CardHeader from "@mui/material/CardHeader";
 import CardActions from "@mui/material/CardActions";
 import IconButton from "@mui/material/IconButton";
 import { Favorite } from "@mui/icons-material";
+import { FavoritesContext } from "../../context/FavoriteContext";
 
 interface PokemonDetailProps {
   pokemon: PokemonDetail;
 }
 
 const PokedexCard: React.FC<PokemonDetailProps> = ({ pokemon }) => {
-  console.log(pokemon);
+  const { favorites, setFavorites } = useContext(FavoritesContext);
+
+  const addFavorite = () => {
+    setFavorites([...favorites, pokemon]);
+  };
+
+  const removeFavorite = () => {
+    setFavorites(
+      favorites.filter((pokeFavorite) => pokeFavorite.name !== pokemon.name)
+    );
+  };
+
+  const isFavorite = favorites.some((fav) => fav.name === pokemon.name);
+
   return (
     <>
       <Card>
@@ -28,13 +43,10 @@ const PokedexCard: React.FC<PokemonDetailProps> = ({ pokemon }) => {
         />
         <CardActions disableSpacing>
           <IconButton
-            onClick={
-              () => {}
-              // isFavorite ? removePokemonFromFavorites() : addPokemonToFavorite()
-            }
+            onClick={() => (isFavorite ? removeFavorite() : addFavorite())}
             aria-label="add to favorites"
           >
-            <Favorite color={`error`} />
+            <Favorite color={isFavorite ? "error" : `disabled`} />
           </IconButton>
         </CardActions>
       </Card>
