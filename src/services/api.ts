@@ -1,12 +1,14 @@
 import axios from "axios";
-import { IGetListPokemons } from "../@types/getAllPokemons";
+import { IGetListPokemons, Root } from "../@types/getAllPokemons";
 
 const api = import.meta.env.VITE_POKEAPI;
 
-export const getAllPokemons = async (): Promise<IGetListPokemons> => {
+export const getAllPokemons = async (
+  page: number
+): Promise<IGetListPokemons> => {
   try {
     const response = await axios.get<Promise<IGetListPokemons>>(
-      `${api}/pokemon?limit=12&offset=0`
+      `${api}/pokemon?limit=${page}&offset=0`
     );
     const promiseArr = (await response.data).results.map(async (pokemon) =>
       getPokemonDetail(pokemon.name)
@@ -28,8 +30,18 @@ export const getPokemonDetail = async (
     const response = await axios.get<Promise<IGetListPokemons>>(
       `${api}/pokemon/${name}`
     );
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const getPokemonTypeDetail = async (
+  typeId: string | undefined
+): Promise<Root> => {
+  try {
+    const response = await axios.get<Root>(`${api}/type/${typeId}`);
     return response.data;
   } catch (error) {
     console.error(error);

@@ -8,14 +8,14 @@ const router = createBrowserRouter(routesConfig);
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: false,
+      retry: 0,
+      staleTime: 1000 * 60 * 60 * 24,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
     },
   },
 });
-
-// staleTime: Infinity,
-//       retry: 10,
-//       retryDelay: 1000,
 
 function App() {
   return (
