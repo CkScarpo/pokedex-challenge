@@ -4,17 +4,26 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
   Autocomplete,
   Button,
+  Card,
+  CardContent,
   CircularProgress,
   Container,
   LinearProgress,
+  Modal,
   TextField,
+  Typography,
 } from "@mui/material";
 import PokedexCard from "../../components/PokedexCard";
 import { CustomDiv } from "./styles";
 import { useEffect, useState } from "react";
+import { PokemonDetail } from "../../@types/getAllPokemons";
 
 const HomePage: React.FC = () => {
   const [page, setPage] = useState<number>(12);
+  const [selectedPokemon, setSelectedPokemon] = useState<PokemonDetail | null>(
+    null
+  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     localStorage.getItem("page")
@@ -36,34 +45,81 @@ const HomePage: React.FC = () => {
       placeholderData: keepPreviousData,
     });
 
+  const { data: Search } = useQuery({
+    queryKey: ["getAllPokemons", 1280],
+    queryFn: () => getAllPokemons(1280),
+  });
+
+  const handlePokemonSelect = (pokemon: PokemonDetail) => {
+    setSelectedPokemon(pokemon);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       <Container>
         <CustomDiv>
-          <Autocomplete
-            disablePortal
-            options={
-              data?.results.map((pokemon) => ({
-                label: `${pokemon.name} - ${pokemon.types
-                  .map((typ) => typ.type.name)
-                  .join(", ")}`,
-              })) || []
-            }
-            sx={{ width: 300 }}
-            getOptionLabel={(option) => option.label}
-            renderOption={(props, option) => (
-              <li {...props}>
-                <div>{option.label}</div>
-              </li>
-            )}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Pesquisar por Pokémon"
-                variant="outlined"
-              />
-            )}
-          />
+          <div>
+            <Autocomplete
+              disablePortal
+              options={
+                Search?.results.map((pokemon) => ({
+                  label: `${pokemon.name} - ${pokemon.types
+                    .map((typ) => typ.type.name)
+                    .join(", ")}`,
+                  value: pokemon,
+                })) || []
+              }
+              sx={{ width: 300 }}
+              getOptionLabel={(option) => option.label}
+              renderOption={(props, option) => (
+                <li {...props}>
+                  <div>{option.label}</div>
+                </li>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Pesquisar por Pokémon"
+                  variant="outlined"
+                />
+              )}
+              onChange={(event, value) =>
+                value && handlePokemonSelect(value.value)
+              }
+            />
+
+            <Modal open={isModalOpen} onClose={handleCloseModal}>
+              <div
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              >
+                {selectedPokemon && (
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h4">
+                        Pokémon: {selectedPokemon.name}
+                      </Typography>
+                      <Typography variant="body1">
+                        Tipo:{" "}
+                        {selectedPokemon.types
+                          .map((typ) => typ.type.name)
+                          .join(", ")}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </Modal>
+          </div>
 
           <Button
             variant="outlined"
@@ -75,7 +131,7 @@ const HomePage: React.FC = () => {
               refetch();
             }}
           >
-            Carregar lista incial de Pokemons
+            Recarregar lista incial de Pokemons
           </Button>
         </CustomDiv>
         {!isLoading ? (
